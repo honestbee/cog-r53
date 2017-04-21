@@ -1,0 +1,54 @@
+---
+cog_bundle_version: 4
+name: r53
+description: Interact with Route53 in AWS
+long_description: >
+  This bundle provides commands for viewing, inspecting, and controlling Route53
+  Hosted Zones and Resource Records on AWS. To communicate with the AWS
+  API we use the boto3 library written in Python. Permissions are used to
+  control which users are authorized to run each command. Listing and searching
+  for resources requires the r53:read permission. Modifying the state or other
+  values of a resource requires the r53:write permission. And, destroying an
+  instance requires the r53:admin permission.
+version: 0.0.1
+docker:
+  image: quay.io/honestbee/cog-r53
+  tag: 0.0.1
+permissions:
+  - r53:read
+  - r53:write
+  - r53:admin
+config:
+  notes: >
+    When creating the access key for use with the following environment
+    variables, make sure the IAM user that owns the key has the
+    AmazonRoute53FullAccess policy.
+  env:
+    - var: AWS_ACCESS_KEY_ID
+      description: Requried ID of the access key used to authenticate with the AWS API
+    - var: AWS_SECRET_ACCESS_KEY
+      description: Required secret of the access key used to authenticate with the AWS API
+    - var: AWS_REGION
+      description: Optional region used for all commands unless one is provided via the -r,--region flag
+    - var: AWS_ZONE_ID
+      description: Optional Route53 ZONE_ID used for all Resource Record commands unless one is provided via the -z, --zone-id flag
+commands:
+  zone:
+    description: Enumerate and view existing Hosted Zones
+    executable: /usr/local/bin/cog-command
+    documentation: |
+      Enumerate and view existing Hosted Zones
+
+      r53:zone list
+    rules:
+      - must have r53:read
+templates:
+  zones_list:
+    body: |
+      ~each var=$results as=zone~
+      ~attachment color=$zone.Color~
+      **Zone ID:** ~$zone.Id~
+      **Zone Name:** ~$zone.Name~
+      **Private?:** ~$zone.Private~
+      ~end~
+      ~end~
