@@ -13,8 +13,8 @@ class Record(Route53Base):
 
   def list(self):
     results = []
-    types = self.request.get_optional_option('type')
-    # types is optional, make sure types is list
+    types = self.request.get_optional_option('type') # options['type']
+    # types is optional, types can be a list or string
     types = types if not isinstance(types, str) else [types]
     zones = self.request.options['zone']
     # zones can be string or tuple
