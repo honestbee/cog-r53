@@ -27,6 +27,7 @@ class Zone(Route53Base):
           "Id":z["Id"],
           "Name":z["Name"],
           "Private":z["Config"]["PrivateZone"],
+          "ResourceRecordSetCount":z["ResourceRecordSetCount"],
           "Color": "yellow" if z["Config"]["PrivateZone"] else "blue"
         }
         results.append(zone)
