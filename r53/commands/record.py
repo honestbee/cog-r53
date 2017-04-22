@@ -1,6 +1,7 @@
 from r53.commands.base import Route53Base
 import r53.util as util
 import boto3
+import os, json
 
 class Record(Route53Base):
   def __init__(self):
@@ -12,6 +13,7 @@ class Record(Route53Base):
     handler()
 
   def list(self):
+    print("COGCMD_INFO: %s " % dict(os.environ))
     results = []
     types = self.request.get_optional_option('type') # options['type']
     # types is optional, types can be a list or string
@@ -27,7 +29,7 @@ class Record(Route53Base):
         response = self.r53client.list_resource_record_sets(
           HostedZoneId=zone,
           StartRecordName=response['NextRecordName'],
-          MaxItems='100')
+          MaxItems='100').rec
         self.parse_records(response, zone, types, results)
     self.response.content(results, template='records_list').send()
 
