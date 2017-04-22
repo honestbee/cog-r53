@@ -51,12 +51,12 @@ commands:
       r53:record list
     options:
       zone:
-        type: list
+        type: string
         required: true
         description: ID(s) of the Zone. Run r53:zone-list for list of available Zones.
         short_flag: z
       type:
-        type: list
+        type: string
         required: false
         description: Filter on RecordType(s). 'SOA'|'A'|'TXT'|'NS'|'CNAME'|'MX'|'NAPTR'|'PTR'|'SRV'|'SPF'|'AAAA'
         short_flag: t
