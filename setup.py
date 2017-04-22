@@ -2,7 +2,7 @@ from distutils.core import setup
 
 setup (
     name = "r53",
-    version = "0.1.3",
+    version = "0.1.4",
     description = "Cog commands for AWS Route53",
     author = "Vincent De Smet",
     author_email = "vincent.desmet@honestbee.com",

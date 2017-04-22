@@ -13,36 +13,40 @@ class Record(Route53Base):
 
   def list(self):
     results = []
+    types = self.request.get_optional_option('type')
+    # types is optional, make sure types is list
+    types = types if not isinstance(types, str) else [types]
     zones = self.request.options['zone']
     # zones can be string or tuple
     for zone in zones if not isinstance(zones, str) else [zones]:
       response = self.r53client.list_resource_record_sets(
         HostedZoneId=zone,
         MaxItems='100')
-      self.parse_records(response, zone, results)
+      self.parse_records(response, zone, types, results)
       while response["IsTruncated"]:
         response = self.r53client.list_resource_record_sets(
           HostedZoneId=zone,
-          StartRecordName=response["NextRecordName"],
+          StartRecordName=response['NextRecordName'],
           MaxItems='100')
-        self.parse_records(response, zone, results)
-    self.response.content(results, template="records_list").send()
+        self.parse_records(response, zone, types, results)
+    self.response.content(results, template='records_list').send()
 
   # parse response into result object
-  def parse_records(self, response, zone, results):
+  def parse_records(self, response, zone, types, results):
     for r in response["ResourceRecordSets"]:
-        values = []
-        if "ResourceRecords" in r.keys():
-            for v in r["ResourceRecords"]:
-              values.append(v["Value"])
-        record = {
-          "Zone":zone,
-          "Name":r["Name"],
-          "Type":r["Type"],
-          "AliasTarget":r["AliasTarget"] if "AliasTarget" in r.keys() else None,
-          "ResourceRecords": ",".join(values)
-        }
-        results.append(record)
+        if types is None or r["Type"] in types:
+          values = []
+          if "ResourceRecords" in r.keys():
+              for v in r["ResourceRecords"]:
+                values.append(v["Value"])
+          record = {
+            "Zone":zone,
+            "Name":r["Name"],
+            "Type":r["Type"],
+            "AliasTarget":r["AliasTarget"] if "AliasTarget" in r.keys() else None,
+            "ResourceRecords": ",".join(values) if "ResourceRecords" in r.keys() else None
+          }
+          results.append(record)
 
   def parse_subcommand_(self):
     if self.request.args == None:
