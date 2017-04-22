@@ -73,7 +73,7 @@ templates:
       ~attachment color=$record.Color~
       ~if cond=$record.AliasTarget bound?~
       **Alias Target Name:** ~$record.AliasTarget.DNSName~
-      ~else~
+      ~if cond=$record.ResourceRecords bound?~
       **Target:** ~$record.ResourceRecords~
       ~end~
       **Record Type:** ~$record.Type~
