@@ -80,10 +80,44 @@ echo '"AWS_ZONE_ID": <YOUR_ZONE_ID>' >> config.yaml
 cogctl dynamic-config create r53 config.yaml --layer=base
 ```
 
-# Building
+# Development
+
+## Building
 
 To build the Docker image, simply run:
 
     $ make docker
 
 Requires Python 3.5.x, pip, make, and Docker.
+
+## Testing Locally
+
+Test commands locally:
+
+Create `.env`:
+```
+COG_BUNDLE=r53
+
+AWS_ACCESS_KEY_ID=AKIA...
+AWS_SECRET_ACCESS_KEY=...
+AWS_REGION=ap-southeast-1
+```
+
+Confirm environment is set properly:
+
+```
+docker-compose config
+```
+
+Run `zone` command:
+```
+docker-compose run -e COG_COMMAND=zone command
+```
+
+Provide Arguments:
+```
+COG_ARGC=2
+COG_ARGV_0=zone
+COG_ARGV_1=list
+```
+
