@@ -10,10 +10,10 @@ long_description: >
   for resources requires the r53:read permission. Modifying the state or other
   values of a resource requires the r53:write permission. And, destroying an
   instance requires the r53:admin permission.
-version: 0.1.2
+version: 0.1.3
 docker:
   image: quay.io/honestbee/cog-r53
-  tag: 0.1.2
+  tag: 0.1.3
 permissions:
   - r53:read
   - r53:write
@@ -71,7 +71,7 @@ templates:
     body: |
       ~each var=$results as=record~
       ~attachment color=gray~
-      **Zone:** ~$record.Zone.Name~
+      **Zone:** ~$record.Zone~
       **Record Type:** ~$record.Type~
       **Record Name:** ~$record.Name~
       ~if cond=$record.AliasTarget bound?~

@@ -35,14 +35,14 @@ class Record(Route53Base):
         if "ResourceRecords" in r.keys():
             for v in r["ResourceRecords"]:
               values.append(v["Value"])
-        zone = {
+        record = {
           "Zone":zone,
           "Name":r["Name"],
           "Type":r["Type"],
           "AliasTarget":r["AliasTarget"] if "AliasTarget" in r.keys() else None,
           "ResourceRecords": ",".join(values)
         }
-        results.append(zone)
+        results.append(record)
 
   def parse_subcommand_(self):
     if self.request.args == None:
