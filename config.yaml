@@ -71,13 +71,14 @@ templates:
     body: |
       ~each var=$results as=record~
       ~attachment color=gray~
+      **Zone:** ~$record.Zone.Name~
+      **Record Type:** ~$record.Type~
+      **Record Name:** ~$record.Name~
       ~if cond=$record.AliasTarget bound?~
       **Alias Target Name:** ~$record.AliasTarget.DNSName~
       ~end~
       ~if cond=$record.ResourceRecords bound?~
       **Target:** ~$record.ResourceRecords~
       ~end~
-      **Record Type:** ~$record.Type~
-      **Record Name:** ~$record.Name~
       ~end~
       ~end~
