@@ -70,9 +70,10 @@ templates:
   records_list:
     body: |
       ~each var=$results as=record~
-      ~attachment color=$record.Color~
+      ~attachment color=gray~
       ~if cond=$record.AliasTarget bound?~
       **Alias Target Name:** ~$record.AliasTarget.DNSName~
+      ~end~
       ~if cond=$record.ResourceRecords bound?~
       **Target:** ~$record.ResourceRecords~
       ~end~
