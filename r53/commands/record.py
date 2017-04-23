@@ -13,12 +13,13 @@ class Record(Route53Base):
     handler()
 
   def list(self):
-    print("COGCMD_INFO: %s " % dict(os.environ))
+    # log env vars for debug:
+    # self.response.debug(dict(os.environ))
     results = []
-    types = self.request.get_optional_option('type') # options['type']
+    types = self.request.get_optional_option('TYPE')
     # types is optional, types can be a list or string
     types = types if not isinstance(types, str) else [types]
-    zones = self.request.options['zone']
+    zones = self.request.options['ZONE']
     # zones can be string or tuple
     for zone in zones if not isinstance(zones, str) else [zones]:
       response = self.r53client.list_resource_record_sets(

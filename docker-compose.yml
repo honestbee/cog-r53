@@ -1,9 +1,9 @@
 version: '2'
 services:
   command:
-    image: quay.io/honestbee/r53:0.1.5
+    image: quay.io/honestbee/r53:0.1.6
     command: /usr/local/bin/cog-command
     env_file:
     - ".env"
-    volumes:
-    - .:/home/bundle/r53
+    # volumes:
+    # - .:/home/bundle/r53
