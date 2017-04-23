@@ -10,10 +10,10 @@ long_description: >
   for resources requires the r53:read permission. Modifying the state or other
   values of a resource requires the r53:write permission. And, destroying an
   instance requires the r53:admin permission.
-version: 0.1.7
+version: 0.2.0
 docker:
   image: quay.io/honestbee/cog-r53
-  tag: 0.1.7
+  tag: 0.2.0
 permissions:
   - r53:read
   - r53:write
@@ -42,9 +42,9 @@ commands:
       r53:zone list
     rules:
       - must have r53:read
-  record:
+  record-list:
     description: Enumerate and view existing Hosted Zones
-    executable: /usr/local/bin/cog-command
+    executable: /usr/local/bin/cog-sub-command
     documentation: |
       Enumerate and view existing Resource Records
 

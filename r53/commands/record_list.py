@@ -3,16 +3,15 @@ import r53.util as util
 import boto3
 import os, json
 
-class Record(Route53Base):
+class Record_list(Route53Base):
   def __init__(self):
     super().__init__()
     self.r53client = boto3.client('route53')
 
   def run(self):
-    handler = self.parse_subcommand_()
-    handler()
+    self.list_()
 
-  def list(self):
+  def list_(self):
     # log env vars for debug:
     # self.response.debug(dict(os.environ))
     results = []
@@ -25,17 +24,17 @@ class Record(Route53Base):
       response = self.r53client.list_resource_record_sets(
         HostedZoneId=zone,
         MaxItems='100')
-      self.parse_records(response, zone, types, results)
+      self.parse_records_(response, zone, types, results)
       while response["IsTruncated"]:
         response = self.r53client.list_resource_record_sets(
           HostedZoneId=zone,
           StartRecordName=response['NextRecordName'],
           MaxItems='100')
-        self.parse_records(response, zone, types, results)
+        self.parse_records_(response, zone, types, results)
     self.response.content(results, template='records_list').send()
 
   # parse response into result object
-  def parse_records(self, response, zone, types, results):
+  def parse_records_(self, response, zone, types, results):
     for r in response["ResourceRecordSets"]:
         if types is None or r["Type"] in types:
           values = []
@@ -50,10 +49,3 @@ class Record(Route53Base):
             "ResourceRecords": ",".join(values) if "ResourceRecords" in r.keys() else None
           }
           results.append(record)
-
-  def parse_subcommand_(self):
-    if self.request.args == None:
-      return self.list
-    if self.request.args[0] == "list":
-      return self.list
-    self.fail("Unknown subcommand: '%s'" % self.request.args[0])
