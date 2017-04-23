@@ -13,7 +13,7 @@ class Record_list(Route53Base):
 
   def list_(self):
     # log env vars for debug:
-    # self.response.debug(dict(os.environ))
+    # self.response.debug(json.dumps(dict(os.environ)))
     results = []
     types = self.request.get_optional_option('TYPE')
     name_filter = self.request.get_optional_option('NAME')
@@ -27,23 +27,26 @@ class Record_list(Route53Base):
       if name_filter is not None:
         response_iterator = response_iterator.search(
           "ResourceRecordSets[?contains(@.Name,'%s')]" % name_filter)
-      for response in response_iterator:
-        self.parse_records_(response, zone, types, results)
+      else:
+        response_iterator = response_iterator.search(
+          "ResourceRecordSets[]" % name_filter)
+      for r in response_iterator:
+        self.parse_record_(r, zone, types, results)
     self.response.content(results, template='records_list').send()
 
-  # apply type filter and parse response into result object
-  def parse_records_(self, response, zone, types, results):
-    for r in response["ResourceRecordSets"]:
-        if types is None or r["Type"] in types:
-          values = []
-          if "ResourceRecords" in r.keys():
-              for v in r["ResourceRecords"]:
-                values.append(v["Value"])
-          record = {
-            "Zone":zone,
-            "Name":r["Name"],
-            "Type":r["Type"],
-            "AliasTarget":r["AliasTarget"] if "AliasTarget" in r.keys() else None,
-            "ResourceRecords": ",".join(values) if "ResourceRecords" in r.keys() else None
-          }
-          results.append(record)
+  # apply type filter and parse record into result object
+  def parse_record_(self, r, zone, types, results):
+    # self.response.debug(json.dumps(records))
+    if types is None or r["Type"] in types:
+      values = []
+      if "ResourceRecords" in r.keys():
+          for v in r["ResourceRecords"]:
+            values.append(v["Value"])
+      record = {
+        "Zone":zone,
+        "Name":r["Name"],
+        "Type":r["Type"],
+        "AliasTarget":r["AliasTarget"] if "AliasTarget" in r.keys() else None,
+        "ResourceRecords": ",".join(values) if "ResourceRecords" in r.keys() else None
+      }
+      results.append(record)

@@ -1,5 +1,5 @@
 BUNDLE_NAME          = r53
-BUNDLE_VERSION      ?= 0.2.1
+BUNDLE_VERSION      ?= 0.2.2
 IMAGE_TAG            = quay.io/honestbee/$(BUNDLE_NAME):$(BUNDLE_VERSION)
 
 .PHONY: docker docker-clean docker-shell docker-fresh
