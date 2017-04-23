@@ -28,15 +28,14 @@ class Record_list(Route53Base):
         response_iterator = response_iterator.search(
           "ResourceRecordSets[?contains(@.Name,'%s')]" % name_filter)
       else:
-        response_iterator = response_iterator.search(
-          "ResourceRecordSets[]" % name_filter)
+        # unpack to match same response format
+        response_iterator = response_iterator.search("ResourceRecordSets[]")
       for r in response_iterator:
         self.parse_record_(r, zone, types, results)
     self.response.content(results, template='records_list').send()
 
   # apply type filter and parse record into result object
   def parse_record_(self, r, zone, types, results):
-    # self.response.debug(json.dumps(records))
     if types is None or r["Type"] in types:
       values = []
       if "ResourceRecords" in r.keys():
