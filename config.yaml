@@ -43,7 +43,7 @@ commands:
     rules:
       - must have r53:read
   record-list:
-    description: Enumerate and view existing Hosted Zones
+    description: Enumerate and view existing Records within a zone
     executable: /usr/local/bin/cog-sub-command
     documentation: |
       Enumerate and view existing Resource Records
@@ -53,13 +53,18 @@ commands:
       zone:
         type: list
         required: true
-        description: ID(s) of the Zone. Run r53:zone-list for list of available Zones.
+        description: ID(s) of the Zone. Run r53:zone for list of available Zones.
         short_flag: z
       type:
         type: list
         required: false
         description: Filter on RecordType(s). 'SOA'|'A'|'TXT'|'NS'|'CNAME'|'MX'|'NAPTR'|'PTR'|'SRV'|'SPF'|'AAAA'
         short_flag: t
+      name:
+        type: string
+        required: false
+        description: Filter down to records that contain this string in their name.
+        short_flag: n
     rules:
       - must have r53:read
 templates:

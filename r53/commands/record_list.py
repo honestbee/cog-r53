@@ -16,24 +16,22 @@ class Record_list(Route53Base):
     # self.response.debug(dict(os.environ))
     results = []
     types = self.request.get_optional_option('TYPE')
+    name_filter = self.request.get_optional_option('NAME')
     # types is optional, types can be a list or string
     types = types if not isinstance(types, str) else [types]
     zones = self.request.options['ZONE']
     # zones can be string or tuple
     for zone in zones if not isinstance(zones, str) else [zones]:
-      response = self.r53client.list_resource_record_sets(
-        HostedZoneId=zone,
-        MaxItems='100')
-      self.parse_records_(response, zone, types, results)
-      while response["IsTruncated"]:
-        response = self.r53client.list_resource_record_sets(
-          HostedZoneId=zone,
-          StartRecordName=response['NextRecordName'],
-          MaxItems='100')
+      paginator = self.r53client.get_paginator('list_resource_record_sets')
+      response_iterator = paginator.paginate(HostedZoneId=zone)
+      if name_filter is not None:
+        response_iterator = response_iterator.search(
+          "ResourceRecordSets[?contains(@.Name,'%s')]" % name_filter)
+      for response in response_iterator:
         self.parse_records_(response, zone, types, results)
     self.response.content(results, template='records_list').send()
 
-  # parse response into result object
+  # apply type filter and parse response into result object
   def parse_records_(self, response, zone, types, results):
     for r in response["ResourceRecordSets"]:
         if types is None or r["Type"] in types:
