@@ -1,7 +1,7 @@
 version: '2'
 services:
   command:
-    image: quay.io/honestbee/r53:0.1.7
+    image: quay.io/honestbee/r53:0.2.1
     # command: /usr/local/bin/cog-command
     command: /usr/local/bin/cog-sub-command
     env_file:
