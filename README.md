@@ -121,3 +121,17 @@ COG_ARGV_0=zone
 COG_ARGV_1=list
 ```
 
+Provide Options (in .env file):
+```
+# all passed in option flags
+COG_OPTS=zone,type
+
+# type as string option
+COG_OPT_TYPE=A
+
+# zone as list option
+COG_OPT_ZONE_COUNT=2
+COG_OPT_ZONE_0=Z1...
+COG_OPT_ZONE_1=ZV...
+```
+

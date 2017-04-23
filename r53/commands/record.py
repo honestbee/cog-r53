@@ -30,7 +30,7 @@ class Record(Route53Base):
         response = self.r53client.list_resource_record_sets(
           HostedZoneId=zone,
           StartRecordName=response['NextRecordName'],
-          MaxItems='100').rec
+          MaxItems='100')
         self.parse_records(response, zone, types, results)
     self.response.content(results, template='records_list').send()
 
