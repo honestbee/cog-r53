@@ -24,7 +24,9 @@ Behind the scenes using the `change-resource-record-set` API endpoint:
 
 set default `Hosted Zone ID` as part of dynamic config of bundle?
 
-## Basic
+## Records
+
+### Basic
 
 ```
 !r53:record create
@@ -35,7 +37,7 @@ set default `Hosted Zone ID` as part of dynamic config of bundle?
   <dns name> <values (csv list)>
 ```
 
-## Alias
+### Alias
 
 See [Choosing between Alias and Non-Alias](https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/resource-record-sets-choosing-alias-non-alias.html)
 
@@ -53,6 +55,16 @@ See [Choosing between Alias and Non-Alias](https://docs.aws.amazon.com/Route53/l
 - [Route53 docs](http://docs.aws.amazon.com/cli/latest/reference/route53/change-resource-record-sets.html?highlight=route53)
 
 # Installing
+
+From GitHub repository:
+
+```
+wget -qO- https://github.com/honestbee/cog-r53/raw/master/config.yaml |
+ cogctl bundle install -er default - --force
+```
+
+
+Once added to Warehouse:
 
 In chat:
 
