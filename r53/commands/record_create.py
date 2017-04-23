@@ -13,13 +13,13 @@ class Record_create(Route53Base):
 
   def create_(self):
     # dump environment
-    self.response.info(json.dumps(dict(os.environ)))
+    # self.response.info(json.dumps(dict(os.environ)))
     # dump arguments
-    self.response.info(" Arguments: %s" % self.request.args)
+    # self.response.info('Arguments: %s' % self.request.args)
     # prepare create
     type = self.request.options['TYPE']
     zone = self.request.options['ZONE']
-    alias_zone = self.request.get_optional_option('ALIAS_TARGET_ZONE')
+    alias_zone = self.request.get_optional_option('ALIAS-TARGET-ZONE')
     name = self.request.args[0]
     values = self.request.args[1:]
     changes = util.ChangeBatch()
@@ -29,11 +29,13 @@ class Record_create(Route53Base):
             ttl = 60
         else:
             ttl = int(ttl)
+        self.response.info('Creating basic %s record: %s -> %s' % (type, name, values))
         changes.add_upsert_basic(name,type,ttl, values)
     else:
         # only take first argument
+        self.response.info('Creating alias %s record: %s -> %s' % (type, name, values[0]))
         changes.add_upsert_alias(name,type,alias_zone,values[0])
 
     # dump changebatch dict as json
     self.response.info(json.dumps(vars(changes)))
-    self.response.content("Not Implemented, check Relay logs").send()
+    self.response.content({'Message': 'record-create is not fully implemented, check Relay logs'}).send()
