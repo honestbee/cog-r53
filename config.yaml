@@ -10,10 +10,10 @@ long_description: >
   for resources requires the r53:read permission. Modifying the state or other
   values of a resource requires the r53:write permission. And, destroying an
   instance requires the r53:admin permission.
-version: 0.2.2
+version: 0.2.3
 docker:
   image: quay.io/honestbee/cog-r53
-  tag: 0.2.2
+  tag: 0.2.3
 permissions:
   - r53:read
   - r53:write
@@ -67,6 +67,36 @@ commands:
         short_flag: n
     rules:
       - must have r53:read
+  record-create:
+    description: Creates a new Resource Record.
+    executable: /usr/local/bin/cog-sub-command
+    documentation: |
+      Create new Resource Records.
+
+      Basic records or Alias records.
+    arguments: "<name> <dns name> [<values>]"
+    options:
+      zone:
+        type: string
+        required: true
+        description: ID of the Zone. Run r53:zone-list for list of available Zones.
+        short_flag: z
+      type:
+        type: string
+        required: true
+        description: Specify Record Type. 'SOA'|'A'|'TXT'|'NS'|'CNAME'|'MX'|'NAPTR'|'PTR'|'SRV'|'SPF'|'AAAA'
+        short_flag: t
+      alias-target-zone:
+        type: string
+        required: false
+        description: Required for Aliases. (Mutually exclusive with --ttl)
+        short_flag: a
+      ttl:
+        type: string
+        required: false
+        description: default = 60. (Mutually exclusive with --alias-target-zone)
+    rules:
+      - must have r53:write
 templates:
   zones_list:
     body: |
