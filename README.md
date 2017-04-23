@@ -111,7 +111,7 @@ To build the Docker image, simply run:
 
     $ make docker
 
-Requires Python 3.5.x, pip, make, and Docker.
+Requires Docker.
 
 ## Testing Locally
 
@@ -175,7 +175,7 @@ COG_OPT_ZONE=Z1...
 COG_OPT_ALIAS-TARGET-ZONE=Z1...
 COG_OPT_TYPE=A
 
-COG_ARGC=3
+COG_ARGC=2
 COG_ARGV_0=record_name
 COG_ARGV_1=alias-target
 ```
