@@ -1,28 +1,42 @@
 # Route53 bundle for Cog
 
+Early trial of a bundle to manage Route53 records from Slack.
+
+Primary use case is to create CNAME records by marketing for SaaS marketing platform.
+
 ## TL;DR
+
 no support for `HealthCheckId` atm.
 no support for `Weighted` records atm.
 
 ```
-!r53:zone create example.com --comment 'hosted zone'
-!r53:zone list
-!r53:record create example.com 'www 60 A 192.168.0.1'
+# list zones
+!r53:zone
+
+# list records (with option to filter down to records containing <name-filter>)
+!r53:record list -z <zone-id> [-t <record-type>] [-n <name-filter>]
+
+# create basic record
+!r53:record create -z <zone-id> -t <record-type> <name> <record>[, <record>, ...]
+
+# create alias record
+!r53:record create -z <zone-id> -t <record-type> -a <alias-zone-id> <name> <dnsname> <record>
 ```
 
 ## Zones
 
-List should return a table similar to:
+Returns a table similar to:
 
 ```
 aws route53 list-hosted-zones \
-    --query "HostedZones[].[Id,Name,Config.PrivateZone]" \
+    --query "HostedZones[].[Id,Name,Config.PrivateZone,ResourceRecordSetCount]" \
     --output table
 ```
 
-Behind the scenes using the `change-resource-record-set` API endpoint:
+Color coded as follows:
 
-set default `Hosted Zone ID` as part of dynamic config of bundle?
+- blue: public zones
+- yellow: private zones
 
 ## Records
 
@@ -34,7 +48,7 @@ set default `Hosted Zone ID` as part of dynamic config of bundle?
   --zone-id <zone-id> (default: "zone-id from config")
   --TTL "time to live in seconds"
   --type "SOA|A|TXT|NS|CNAME|MX|PTR|SRV|SPF|AAAA" (default: "A")
-  <dns name> <values (csv list)>
+  <name> <values>
 ```
 
 ### Alias
@@ -47,7 +61,7 @@ See [Choosing between Alias and Non-Alias](https://docs.aws.amazon.com/Route53/l
   --zone-id <zone-id>
   --type "SOA|A|TXT|NS|CNAME|MX|PTR|SRV|SPF|AAAA" (default: "A")
   --alias-target-zone-id <zone-id>
-  <dns name>
+  <name> <dns name> <value>
 ```
 
 ## References
@@ -63,32 +77,29 @@ wget -qO- https://github.com/honestbee/cog-r53/raw/master/config.yaml |
  cogctl bundle install -er default - --force
 ```
 
-
-Once added to Warehouse:
+If available from Cog Warehouse:
 
 In chat:
 
 ```
-@cog bundle install statuspage
+@cog bundle install r53
 ```
 
 From the command line:
 
 ```
-cogctl bundle install statuspage
+cogctl bundle install r53
 ```
 
 # Configuring
 
-The `r53` bundle requires aws credentials, default region and zoneid.
+The `r53` bundle requires aws credentials with route53 Full permissions.
 
 You can set these variables with Cog's dynamic config feature:
 
 ```bash
 echo '"AWS_ACCESS_KEY_ID": <YOUR_ACCESS_KEY_ID>' >> config.yaml
 echo '"AWS_SECRET_ACCESS_KEY": <YOUR_SECRET_ACCESS_KEY>' >> config.yaml
-echo '"AWS_REGION": <YOUR_REGION>' >> config.yaml
-echo '"AWS_ZONE_ID": <YOUR_ZONE_ID>' >> config.yaml
 cogctl dynamic-config create r53 config.yaml --layer=base
 ```
 
@@ -112,7 +123,6 @@ COG_BUNDLE=r53
 
 AWS_ACCESS_KEY_ID=AKIA...
 AWS_SECRET_ACCESS_KEY=...
-AWS_REGION=ap-southeast-1
 ```
 
 Confirm environment is set properly:
@@ -126,14 +136,7 @@ Run `zone` command:
 docker-compose run -e COG_COMMAND=zone command
 ```
 
-Provide Arguments:
-```
-COG_ARGC=2
-COG_ARGV_0=zone
-COG_ARGV_1=list
-```
-
-Provide Options (in .env file):
+Test Options (in .env file):
 ```
 # all passed in option flags
 COG_OPTS=zone,type
@@ -147,3 +150,32 @@ COG_OPT_ZONE_0=Z1...
 COG_OPT_ZONE_1=ZV...
 ```
 
+Test basic record-create
+```
+COG_COMMAND=record-create
+
+COG_OPTS=zone,type,alias-target-zone
+COG_OPTS=zone,type
+
+COG_OPT_ZONE=Z1NL520TLGD8CP
+COG_OPT_TYPE=A
+
+COG_ARGC=3
+COG_ARGV_0=record_name
+COG_ARGV_1=resource_1
+COG_ARGV_2=resource_2
+```
+
+Test alias record-create
+```
+COG_COMMAND=record-create
+COG_OPTS=zone,type,alias-target-zone
+
+COG_OPT_ZONE=Z1...
+COG_OPT_ALIAS-TARGET-ZONE=Z1...
+COG_OPT_TYPE=A
+
+COG_ARGC=3
+COG_ARGV_0=record_name
+COG_ARGV_1=alias-target
+```
