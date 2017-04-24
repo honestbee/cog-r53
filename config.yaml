@@ -122,3 +122,10 @@ templates:
       ~end~
       ~end~
       ~end~
+  record_create:
+    body: |
+      ~each var=$results as=record~
+      ~attachment color=$record.Response.Color~
+      **Request:** ~$record.message~
+      ~end~
+      ~end~
