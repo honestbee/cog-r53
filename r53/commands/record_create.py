@@ -22,6 +22,7 @@ class Record_create(Route53Base):
     alias_zone = self.request.get_optional_option('ALIAS-TARGET-ZONE')
     name = self.request.args[0]
     values = self.request.args[1:]
+    # populate changebatch
     changes = util.ChangeBatch()
     if alias_zone is None:
         ttl = self.request.get_optional_option('TTL')
@@ -37,5 +38,10 @@ class Record_create(Route53Base):
         changes.add_upsert_alias(name,type,alias_zone,values[0])
 
     # dump changebatch dict as json
-    self.response.info(json.dumps(vars(changes)))
-    self.response.content({'Message': 'record-create is not fully implemented, check Relay logs'}).send()
+    # self.response.info(json.dumps(vars(changes)))
+    r53response = self.r53client.change_resource_record_sets(
+        HostedZoneId=zone,
+        ChangeBatch=vars(changes)
+    )
+    self.response.info(json.dumps(r53response))
+    self.response.content(r53response['ChangeInfo']).send()
