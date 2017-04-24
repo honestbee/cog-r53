@@ -126,6 +126,6 @@ templates:
     body: |
       ~each var=$results as=record~
       ~attachment color=$record.Response.Color~
-      **Request:** ~$record.message~
+      **Request:** ~$record.Request~
       ~end~
       ~end~
