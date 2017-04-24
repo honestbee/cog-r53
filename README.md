@@ -153,8 +153,6 @@ COG_OPT_ZONE_1=ZV...
 Test basic record-create
 ```
 COG_COMMAND=record-create
-
-COG_OPTS=zone,type,alias-target-zone
 COG_OPTS=zone,type
 
 COG_OPT_ZONE=Z1NL520TLGD8CP
