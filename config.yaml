@@ -28,10 +28,6 @@ config:
       description: Requried ID of the access key used to authenticate with the AWS API
     - var: AWS_SECRET_ACCESS_KEY
       description: Required secret of the access key used to authenticate with the AWS API
-    - var: AWS_REGION
-      description: Optional region used for all commands unless one is provided via the -r,--region flag
-    - var: AWS_ZONE_ID
-      description: Optional Route53 ZONE_ID used for all Resource Record commands unless one is provided via the -z, --zone-id flag
 commands:
   zone:
     description: Enumerate and view existing Hosted Zones
