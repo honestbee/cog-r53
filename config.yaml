@@ -8,12 +8,12 @@ long_description: >
   API we use the boto3 library written in Python. Permissions are used to
   control which users are authorized to run each command. Listing and searching
   for resources requires the r53:read permission. Modifying the state or other
-  values of a resource requires the r53:write permission. And, destroying an
-  instance requires the r53:admin permission.
-version: 0.2.5
+  values of a resource requires the r53:write permission. And, destroying a
+  resource requires the r53:admin permission.
+version: 0.2.6
 docker:
   image: quay.io/honestbee/cog-r53
-  tag: 0.2.5
+  tag: 0.2.6
 permissions:
   - r53:read
   - r53:write
