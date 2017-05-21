@@ -23,7 +23,7 @@ class Record_create(Route53Base):
     if alias_zone is None:
         ttl = self.request.get_optional_option('TTL')
         if ttl is None:
-            ttl = 60
+            ttl = 300
         else:
             ttl = int(ttl)
         change_description = 'upsert: basic %s record: %s -> %s' % (type, name, values)
