@@ -13,24 +13,29 @@ class Zone(Route53Base):
 
   def list(self):
     results = []
-    response = self.r53client.list_hosted_zones(MaxItems='100')
-    self.parse_zones(response,results)
-    while response["IsTruncated"]:
-      response = self.r53client.list_hosted_zones(Marker=response["NextMarker"], MaxItems='100')
-      self.parse_zones(response,results)
+    name_filter = self.request.get_optional_option('NAME')
+    paginator = self.r53client.get_paginator('list_hosted_zones')
+    response_iterator = paginator.paginate()
+    if name_filter is not None:
+      response_iterator = response_iterator.search(
+        "HostedZones[?contains(@.Name,'%s')]" % name_filter)
+    else:
+      # unpack to match same response format
+      response_iterator = response_iterator.search("HostedZones[]")
+    for z in response_iterator:
+      self.parse_zone_(z, results)
     self.response.content(results, template="zones_list").send()
 
   # parse response into result object
-  def parse_zones(self,response,results):
-    for z in response["HostedZones"]:
-        zone = {
-          "Id":z["Id"],
-          "Name":z["Name"],
-          "Private":z["Config"]["PrivateZone"],
-          "ResourceRecordSetCount":z["ResourceRecordSetCount"],
-          "Color": "yellow" if z["Config"]["PrivateZone"] else "blue"
-        }
-        results.append(zone)
+  def parse_zone_(self,z,results):
+      zone = {
+        "Id":z["Id"],
+        "Name":z["Name"],
+        "Private":z["Config"]["PrivateZone"],
+        "ResourceRecordSetCount":z["ResourceRecordSetCount"],
+        "Color": "yellow" if z["Config"]["PrivateZone"] else "blue"
+      }
+      results.append(zone)
 
   def parse_subcommand_(self):
     if self.request.args == None:

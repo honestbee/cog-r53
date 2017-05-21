@@ -36,6 +36,12 @@ commands:
       Enumerate and view existing Hosted Zones
 
       r53:zone list
+    options:
+      name:
+        type: string
+        required: false
+        description: Filter down to zones that contain this string in their name.
+        short_flag: n
     rules:
       - must have r53:read
   record-list:
