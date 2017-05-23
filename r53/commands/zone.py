@@ -13,7 +13,12 @@ class Zone(Route53Base):
 
   def list(self):
     results = []
-    name_filter = self.request.get_optional_option('NAME')
+    name_filter=None
+    try:
+      name_filter = self.request.get_optional_option('NAME')
+    except:
+      pass
+
     paginator = self.r53client.get_paginator('list_hosted_zones')
     response_iterator = paginator.paginate()
     if name_filter is not None:
