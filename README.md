@@ -2,8 +2,6 @@
 
 Early trial of a bundle to manage Route53 records from Slack.
 
-Primary use case is to create CNAME records by marketing for SaaS marketing platform.
-
 ## TL;DR
 
 no support for `HealthCheckId` atm.
@@ -11,7 +9,7 @@ no support for `Weighted` records atm.
 
 ```
 # list zones
-!r53:zone
+!r53:zone [-n <name-filter>]
 
 # list records (with option to filter down to records containing <name-filter>)
 !r53:record list -z <zone-id> [-t <record-type>] [-n <name-filter>]
@@ -70,14 +68,16 @@ See [Choosing between Alias and Non-Alias](https://docs.aws.amazon.com/Route53/l
 
 # Installing
 
-From GitHub repository:
+## From GitHub repository:
+
+From the cog command line
 
 ```
 wget -qO- https://github.com/honestbee/cog-r53/raw/master/config.yaml |
  cogctl bundle install -er default - --force
 ```
 
-If available from Cog Warehouse:
+## From Cog Warehouse:
 
 In chat:
 
